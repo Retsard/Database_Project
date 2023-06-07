@@ -1,0 +1,93 @@
+CREATE DATABASE fis_db;
+
+
+CREATE USER 'superadmin'@'%' IDENTIFIED BY 'password';
+
+GRANT ALL PRIVILEGES ON *.* TO 'superadmin'@'%' WITH GRANT OPTION;
+
+CREATE TABLE crop (
+  crop_id INT AUTO_INCREMENT PRIMARY KEY,
+  crop_type VARCHAR(50) NOT NULL,
+  crop_name VARCHAR(50) NOT NULL,
+  crop_description VARCHAR(200) NOT NULL,
+  crop_image VARCHAR(255) NOT NULL,
+  potential_yield INT NOT NULL,
+  farm_gate_price INT
+);
+
+CREATE TABLE farmer (
+  farmer_id INT AUTO_INCREMENT PRIMARY KEY,
+  first_name VARCHAR(50) NOT NULL,
+  last_name VARCHAR(50) NOT NULL,
+  age INT NOT NULL,
+  ethnic_origin VARCHAR(50),
+  image VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE address (
+  address_id INT AUTO_INCREMENT PRIMARY KEY,
+  street_name VARCHAR(50) NOT NULL,
+  barangay_name VARCHAR(50) NOT NULL,
+  city_name VARCHAR(50) NOT NULL,
+  province_name VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE livestock (
+  livestock_id INT AUTO_INCREMENT PRIMARY KEY,
+  livestock_type VARCHAR(50) NOT NULL,
+  livestock_description VARCHAR(50) NOT NULL,
+  livestock_image VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE accounts (
+  account_id INT AUTO_INCREMENT PRIMARY KEY,
+  account_name VARCHAR(50) NOT NULL,
+  username VARCHAR(50) NOT NULL,
+  password VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE farm (
+  farm_id INT AUTO_INCREMENT PRIMARY KEY,
+  farm_name VARCHAR(50) NOT NULL,
+  farm_image VARCHAR(255) NOT NULL,
+  farm_description VARCHAR(200) NOT NULL,
+  area_size INT NOT NULL,
+  farmer_id INT,
+  crop_id INT,
+  livestock_id INT,
+  address_id INT,
+  FOREIGN KEY (farmer_id) REFERENCES farmer(farmer_id),
+  FOREIGN KEY (crop_id) REFERENCES crop(crop_id),
+  FOREIGN KEY (livestock_id) REFERENCES livestock(livestock_id),
+  FOREIGN KEY (address_id) REFERENCES address(address_id)
+);
+
+CREATE VIEW farm_details_view AS 
+SELECT f.farm_id, f.farm_name, f.farm_image, f.farm_description, f.area_size, fa.first_name, fa.last_name, fa.age, fa.ethnic_origin, fa.image, ad.street_name, ad.barangay_name, ad.city_name 
+FROM farm f 
+JOIN farmer fa ON f.farmer_id = fa.farmer_id 
+JOIN address ad ON f.address_id = ad.address_id;
+
+CREATE VIEW livestock_view AS 
+SELECT livestock_id, livestock_type, livestock_description, livestock_image FROM livestock;
+
+CREATE VIEW crop_yield_view AS 
+SELECT crop_id, crop_type, crop_name, potential_yield FROM crop;
+
+CREATE VIEW farm_livestock_view AS 
+SELECT f.farm_id, f.farm_name, l.livestock_type 
+FROM farm f 
+JOIN livestock l ON f.livestock_id = l.livestock_id;
+
+CREATE VIEW farm_address_view AS 
+SELECT f.farmer_id, f.first_name, f.last_name, f.age, a.street_name, a.barangay_name, a.city_name
+FROM farmer f
+JOIN farm fm ON f.farmer_id = fm.farmer_id
+JOIN address a ON fm.address_id = a.address_id;
+
+CREATE VIEW crop_average_yield_view AS
+SELECT crop_id, crop_type, crop_name, AVG(potential_yield) AS average_yield
+FROM crop
+GROUP BY crop_id, crop_type, crop_name;
+
+

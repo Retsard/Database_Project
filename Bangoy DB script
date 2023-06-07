@@ -1,5 +1,9 @@
 CREATE ROLE superadmin WITH LOGIN SUPERUSER CREATEDB CREATEROLE;
 
+CREATE DATABASE fis_db;
+
+CREATE SCHEMA fis_sc AUTHORIZATION superadmin;
+
 CREATE USER db_admin WITH PASSWORD 'Dbadmin123!';
 ALTER USER db_admin SET search_path TO fis_sc;
 GRANT superadmin TO db_admin;
@@ -9,7 +13,7 @@ CREATE TABLE crop (crop_id SERIAL PRIMARY KEY, crop_type VARCHAR(50) NOT NULL, c
 
 CREATE TABLE farmer (farmer_id SERIAL PRIMARY KEY, first_name VARCHAR(50) NOT NULL, last_name VARCHAR(50) NOT NULL, age INT NOT NULL, ethnic_origin VARCHAR(50), image VARCHAR(255) NOT NULL);
 
-CREATE TABLE address (address_id SERIAL PRIMARY KEY, street_name VARCHAR(50) NOT NULL, barangay_name VARCHAR(50) NOT NULL, municipality_name VARCHAR(50) NOT NULL, city_name VARCHAR(50) NOT NULL);
+CREATE TABLE address (address_id SERIAL PRIMARY KEY, street_name VARCHAR(50) NOT NULL, barangay_name VARCHAR(50) NOT NULL, city_name VARCHAR(50) NOT NULL, province_name VARCHAR(50) NOT NULL);
 
 CREATE TABLE livestock (livestock_id SERIAL PRIMARY KEY, livestock_type VARCHAR(50) NOT NULL, livestock_description VARCHAR(50) NOT NULL, livestock_image VARCHAR(255) NOT NULL);
 
