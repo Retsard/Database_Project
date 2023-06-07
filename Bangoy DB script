@@ -1,0 +1,79 @@
+CREATE ROLE superadmin WITH LOGIN SUPERUSER CREATEDB CREATEROLE;
+
+CREATE USER db_admin WITH PASSWORD 'Dbadmin123!';
+ALTER USER db_admin SET search_path TO fis_sc;
+GRANT superadmin TO db_admin;
+GRANT ALL PRIVILEGES ON DATABASE fis_db TO db_admin;
+
+CREATE TABLE crop (crop_id SERIAL PRIMARY KEY, crop_type VARCHAR(50) NOT NULL, crop_name VARCHAR(50) NOT NULL, crop_description VARCHAR(200) NOT NULL, crop_image VARCHAR(255) NOT NULL, potential_yield INT NOT NULL, farm_gate_price INT);
+
+CREATE TABLE farmer (farmer_id SERIAL PRIMARY KEY, first_name VARCHAR(50) NOT NULL, last_name VARCHAR(50) NOT NULL, age INT NOT NULL, ethnic_origin VARCHAR(50), image VARCHAR(255) NOT NULL);
+
+CREATE TABLE address (address_id SERIAL PRIMARY KEY, street_name VARCHAR(50) NOT NULL, barangay_name VARCHAR(50) NOT NULL, municipality_name VARCHAR(50) NOT NULL, city_name VARCHAR(50) NOT NULL);
+
+CREATE TABLE livestock (livestock_id SERIAL PRIMARY KEY, livestock_type VARCHAR(50) NOT NULL, livestock_description VARCHAR(50) NOT NULL, livestock_image VARCHAR(255) NOT NULL);
+
+CREATE TABLE accounts (account_id SERIAL PRIMARY KEY, account_name VARCHAR(50) NOT NULL, username VARCHAR(50) NOT NULL, password VARCHAR(50) NOT NULL);
+
+CREATE TABLE farm (farm_id SERIAL PRIMARY KEY, farm_name VARCHAR(50) NOT NULL, farm_image VARCHAR(255) NOT NULL, farm_description VARCHAR(200) NOT NULL, area_size INT NOT NULL, farmer_id INT REFERENCES farmer(farmer_id), crop_id INT REFERENCES crop(crop_id), livestock_id INT REFERENCES livestock(livestock_id), address_id INT REFERENCES address(address_id));
+
+CREATE VIEW farm_details_view AS 
+SELECT f.farm_id, f.farm_name, f.farm_image, f.farm_description, f.area_size, fa.first_name, fa.last_name, fa.age, fa.ethnic_origin, fa.image, ad.street_name, ad.barangay_name, ad.municipality_name, ad.city_name 
+FROM farm f 
+JOIN farmer fa ON f.farmer_id = fa.farmer_id 
+JOIN address ad ON f.address_id = ad.address_id;
+
+CREATE VIEW livestock_view AS 
+SELECT livestock_id, livestock_type, livestock_description, livestock_image FROM livestock;
+
+CREATE VIEW crop_yield_view AS SELECT crop_id, crop_type, crop_name, potential_yield FROM crop;
+
+CREATE VIEW farm_livestock_view AS 
+SELECT f.farm_id, f.farm_name, l.livestock_type 
+FROM farm f 
+JOIN livestock l ON f.livestock_id = l.livestock_id;
+
+CREATE VIEW farm_address_view AS 
+SELECT f.farmer_id, f.first_name, f.last_name, f.age, a.street_name, a.barangay_name, a.municipality_name, a.city_name
+FROM farmer f
+JOIN farm fm ON f.farmer_id = fm.farmer_id
+JOIN address a ON fm.address_id = a.address_id;
+
+CREATE VIEW crop_average_yield_view AS
+SELECT crop_id, crop_type, crop_name, AVG(potential_yield) AS average_yield
+FROM crop
+GROUP BY crop_id, crop_type, crop_name;
+
+CREATE ROLE manage LOGIN;
+GRANT INSERT, SELECT, UPDATE ON TABLE fis_sc.address TO manage;
+GRANT INSERT, SELECT, UPDATE ON TABLE fis_sc.crop TO manage;
+GRANT INSERT, SELECT, UPDATE ON TABLE fis_sc.farm TO manage;
+GRANT INSERT, SELECT, UPDATE ON TABLE fis_sc.farmer TO manage;
+GRANT INSERT, SELECT, UPDATE ON TABLE fis_sc.livestock TO manage;
+
+CREATE ROLE view LOGIN;
+GRANT SELECT ON TABLE fis_sc.crop_average_yield_view TO view;
+GRANT SELECT ON TABLE fis_sc.crop_yield_view TO view;
+GRANT SELECT ON TABLE fis_sc.farm_address_view TO view;
+GRANT SELECT ON TABLE fis_sc.farm_details_view TO view;
+GRANT SELECT ON TABLE fis_sc.farm_livestock_view TO view;
+GRANT SELECT ON TABLE fis_sc.livestock_view TO view;
+
+CREATE USER manager WITH PASSWORD 'Dbadmin123!';
+GRANT CONNECT ON DATABASE fis_db TO manager;
+GRANT USAGE ON SCHEMA fis_sc TO manager;
+ALTER USER manager SET search_path TO fis_sc;
+GRANT manage TO manager;
+
+CREATE USER viewer WITH PASSWORD 'Dbadmin123!';
+GRANT CONNECT ON DATABASE fis_db TO viewer;
+GRANT USAGE ON SCHEMA fis_sc TO viewer;
+ALTER USER viewer SET search_path TO fis_sc;
+GRANT view TO viewer;
+
+DROP TABLE accounts;
+DROP TABLE address;
+DROP TABLE crop;
+DROP TABLE farm;
+DROP TABLE farmer;
+DROP TABLE livestock;
