@@ -40,7 +40,7 @@ FROM farm f
 JOIN livestock l ON f.livestock_id = l.livestock_id;
 
 CREATE VIEW farm_address_view AS 
-SELECT f.farmer_id, f.first_name, f.last_name, f.age, a.street_name, a.barangay_name, a.municipality_name, a.city_name
+SELECT f.farmer_id, f.first_name, f.last_name, f.age, a.street_name, a.barangay_name, a.city_name, a.province_name
 FROM farmer f
 JOIN farm fm ON f.farmer_id = fm.farmer_id
 JOIN address a ON fm.address_id = a.address_id;
