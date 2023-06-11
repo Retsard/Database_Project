@@ -4,6 +4,8 @@ CREATE DATABASE fis_db;
 
 CREATE SCHEMA fis_sc AUTHORIZATION superadmin;
 
+SET search_path TO fis_sc;
+
 CREATE USER db_admin WITH PASSWORD 'Dbadmin123!';
 ALTER USER db_admin SET search_path TO fis_sc;
 GRANT superadmin TO db_admin;
