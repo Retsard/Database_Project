@@ -29,10 +29,25 @@ FROM farm f
 JOIN farmer fa ON f.farmer_id = fa.farmer_id 
 JOIN address ad ON f.address_id = ad.address_id;
 
-CREATE VIEW livestock_view AS 
-SELECT livestock_id, livestock_type, livestock_description, livestock_image FROM livestock;
+CREATE VIEW farm_view AS 
+SELECT farm_id, farm_name, farm_image, farm_description, area_size, farmer_id, crop_id, livestock_id, address_id
+FROM farm;
 
-CREATE VIEW crop_yield_view AS SELECT crop_id, crop_type, crop_name, potential_yield FROM crop;
+CREATE VIEW farmer_view AS 
+SELECT farmer_id, first_name, last_name, age, ethnic_origin, image
+FROM farmer;
+
+CREATE VIEW livestock_view AS 
+SELECT livestock_id, livestock_type, livestock_description, livestock_image 
+FROM livestock;
+
+CREATE VIEW crop_view AS 
+SELECT crop_id, crop_type, crop_name, crop_description, crop_image, potential_yield, farm_gate_price
+FROM crop;
+
+CREATE VIEW crop_yield_view AS 
+SELECT crop_id, crop_type, crop_name, potential_yield 
+FROM crop;
 
 CREATE VIEW farm_livestock_view AS 
 SELECT f.farm_id, f.farm_name, l.livestock_type 
@@ -51,35 +66,131 @@ FROM crop
 GROUP BY crop_id, crop_type, crop_name;
 
 CREATE ROLE manage LOGIN;
+GRANT CONNECT ON DATABASE fis_db TO manage;
+GRANT USAGE ON SCHEMA fis_sc TO manage;
 GRANT INSERT, SELECT, UPDATE ON TABLE fis_sc.address TO manage;
 GRANT INSERT, SELECT, UPDATE ON TABLE fis_sc.crop TO manage;
 GRANT INSERT, SELECT, UPDATE ON TABLE fis_sc.farm TO manage;
 GRANT INSERT, SELECT, UPDATE ON TABLE fis_sc.farmer TO manage;
 GRANT INSERT, SELECT, UPDATE ON TABLE fis_sc.livestock TO manage;
-
-CREATE ROLE view LOGIN;
+GRANT USAGE, SELECT, UPDATE ON SEQUENCE crop_crop_id_seq TO manage;
+GRANT USAGE, SELECT, UPDATE ON SEQUENCE farmer_farmer_id_seq TO manage;
+GRANT USAGE, SELECT, UPDATE ON SEQUENCE address_address_id_seq TO manage;
+GRANT USAGE, SELECT, UPDATE ON SEQUENCE farm_farm_id_seq TO manage;
+GRANT USAGE, SELECT, UPDATE ON SEQUENCE livestock_livestock_id_seq TO manage;
 GRANT SELECT ON TABLE fis_sc.crop_average_yield_view TO view;
 GRANT SELECT ON TABLE fis_sc.crop_yield_view TO view;
 GRANT SELECT ON TABLE fis_sc.farm_address_view TO view;
 GRANT SELECT ON TABLE fis_sc.farm_details_view TO view;
 GRANT SELECT ON TABLE fis_sc.farm_livestock_view TO view;
+GRANT SELECT ON TABLE fis_sc.crop_view TO view;
+GRANT SELECT ON TABLE fis_sc.farm_view TO view;
+GRANT SELECT ON TABLE fis_sc.farmer_view TO view;
+GRANT SELECT ON TABLE fis_sc.livestock_view TO view
+
+CREATE ROLE view LOGIN;
+GRANT CONNECT ON DATABASE fis_db TO view;
+GRANT USAGE ON SCHEMA fis_sc TO view;
+GRANT SELECT ON TABLE fis_sc.crop_average_yield_view TO view;
+GRANT SELECT ON TABLE fis_sc.crop_yield_view TO view;
+GRANT SELECT ON TABLE fis_sc.farm_address_view TO view;
+GRANT SELECT ON TABLE fis_sc.farm_details_view TO view;
+GRANT SELECT ON TABLE fis_sc.farm_livestock_view TO view;
+GRANT SELECT ON TABLE fis_sc.crop_view TO view;
+GRANT SELECT ON TABLE fis_sc.farm_view TO view;
+GRANT SELECT ON TABLE fis_sc.farmer_view TO view;
 GRANT SELECT ON TABLE fis_sc.livestock_view TO view;
 
 CREATE USER manager WITH PASSWORD 'Dbadmin123!';
-GRANT CONNECT ON DATABASE fis_db TO manager;
-GRANT USAGE ON SCHEMA fis_sc TO manager;
 ALTER USER manager SET search_path TO fis_sc;
 GRANT manage TO manager;
 
 CREATE USER viewer WITH PASSWORD 'Dbadmin123!';
-GRANT CONNECT ON DATABASE fis_db TO viewer;
-GRANT USAGE ON SCHEMA fis_sc TO viewer;
 ALTER USER viewer SET search_path TO fis_sc;
 GRANT view TO viewer;
 
-DROP TABLE accounts;
-DROP TABLE address;
-DROP TABLE crop;
-DROP TABLE farm;
-DROP TABLE farmer;
-DROP TABLE livestock;
+// Populating the Database
+
+// Crop Table
+INSERT INTO crop (crop_type, crop_name, crop_description, crop_image, potential_yield, farm_gate_price)
+VALUES
+  ('Fruit', 'Apple', 'Red and juicy', 'apple.jpg', 100, 5),
+  ('Vegetable', 'Tomato', 'Red and flavorful', 'tomato.jpg', 80, 3),
+  ('Grain', 'Rice', 'Staple food crop', 'rice.jpg', 150, 2),
+  ('Vegetable', 'Carrot', 'Orange root vegetable', 'carrot.jpg', 60, 4),
+  ('Legume', 'Lentil', 'Nutritious pulse crop', 'lentil.jpg', 90, 6),
+  ('Fruit', 'Banana', 'Yellow and curved', 'banana.jpg', 120, 3),
+  ('Grain', 'Wheat', 'Common cereal grain', 'wheat.jpg', 130, 5),
+  ('Vegetable', 'Spinach', 'Leafy green', 'spinach.jpg', 50, 3),
+  ('Fruit', 'Orange', 'Citrus fruit', 'orange.jpg', 80, 4),
+  ('Fruit', 'Papaya', 'Sweet and Tasty', 'papaya.jpg', 70, 6);
+
+// Farmer Table
+INSERT INTO farmer (first_name, last_name, age, ethnic_origin, image)
+VALUES
+  ('John', 'Doe', 30, 'Caucasian', 'john_doe.jpg'),
+  ('Jane', 'Smith', 35, 'African American', 'jane_smith.jpg'),
+  ('Michael', 'Johnson', 28, 'Hispanic', 'michael_johnson.jpg'),
+  ('Emily', 'Brown', 32, 'Asian', 'emily_brown.jpg'),
+  ('William', 'Davis', 40, 'Caucasian', 'william_davis.jpg'),
+  ('Olivia', 'Wilson', 27, 'African American', 'olivia_wilson.jpg'),
+  ('James', 'Taylor', 38, 'Hispanic', 'james_taylor.jpg'),
+  ('Sophia', 'Anderson', 33, 'Asian', 'sophia_anderson.jpg'),
+  ('Benjamin', 'Thomas', 36, 'Caucasian', 'benjamin_thomas.jpg'),
+  ('Ava', 'Martinez', 31, 'Hispanic', 'ava_martinez.jpg');
+
+// Address Table
+INSERT INTO address (street_name, barangay_name, city_name, province_name)
+VALUES
+  ('123 Main St', 'Lagao', 'General Santos City', 'South Cotabato'),
+  ('456 Elm St', 'San Isidro', 'General Santos City', 'South Cotabato'),
+  ('789 Oak St', 'Puan', 'Davao City', 'Davao Del Sur'),
+  ('321 Maple St', 'Toril', 'Davao City', 'Davao Del Suer'),
+  ('654 Pine St', 'Dela Paz', 'Antipolo', 'Rizal'),
+  ('987 Cedar St', 'Inarawan', 'Antipolo', 'Rizal'),
+  ('135 Walnut St', 'Balintawak', 'Quezon City', 'NCR'),
+  ('864 Birch St', 'Balingasa', 'Quezon City', 'NCR'),
+  ('279 Cherry St', 'Don Bosco', 'Parañaque', 'Rizal'),
+  ('576 Mango St', 'Don Galo', 'Parañaque', 'Rizal');
+
+// Livestock Table
+INSERT INTO livestock (livestock_type, livestock_description, livestock_image)
+VALUES
+  ('Cattle', 'Large domesticated bovine animals', 'cattle.jpg'),
+  ('Pig', 'Domesticated mammal', 'pig.jpg'),
+  ('Chicken', 'Domesticated fowl', 'chicken.jpg'),
+  ('Sheep', 'Domesticated ruminant mammal', 'sheep.jpg'),
+  ('Goat', 'Domesticated mammal', 'goat.jpg'),
+  ('Duck', 'Waterfowl', 'duck.jpg'),
+  ('Turkey', 'Large poultry bird', 'turkey.jpg'),
+  ('Horse', 'Domesticated equine animal', 'horse.jpg'),
+  ('Rabbit', 'Small mammals', 'rabbit.jpg'),
+  ('Donkey', 'Domesticated mammal', 'donkey.jpg');
+
+// Farm Table
+INSERT INTO farm (farm_name, farm_image, farm_description, area_size, farmer_id, crop_id, livestock_id, address_id)
+VALUES
+  ('Green Acres Farm', 'green_acres.jpg', 'Family-owned farm', 10, 1, 1, 1, 1),
+  ('Organic Harmony Farm', 'organic_harmony.jpg', 'Organic farm', 20, 2, 2, 2, 2),
+  ('Sustainable Meadows Farm', 'sustainable_meadows.jpg', 'Sustainable farm', 15, 3, 3, 3, 3),
+  ('Golden Harvest Farm', 'golden_harvest.jpg', 'Commercial farm', 30, 4, 4, 4, 4),
+  ('Small Blessings Farm', 'small_blessings.jpg', 'Small-scale farm', 8, 5, 5, 5, 5),
+  ('Diverse Fields Farm', 'diverse_fields.jpg', 'Diversified farm', 25, 6, 6, 6, 6),
+  ('Livestock Haven Farm', 'livestock_haven.jpg', 'Livestock farm', 18, 7, 7, 7, 7),
+  ('Community Roots Farm', 'community_roots.jpg', 'Community farm', 12, 8, 8, 8, 8),
+  ('Urban Oasis Farm', 'urban_oasis.jpg', 'Urban farm', 7, 9, 9, 9, 9),
+  ('Hobby Haven Farm', 'hobby_haven.jpg', 'Hobby farm', 5, 10, 10, 10, 10);
+  
+// Accounts Table
+INSERT INTO accounts (account_name, username, password)
+VALUES
+  ('Department of Agrarian Reform', 'DAR', 'dar123'),
+  ('Department of Agriculture', 'DA', 'da123'),
+  ('Department of Budget and Management', 'DBM', 'dbm123'),
+  ('Department of Environment and Natural Resources', 'DENR', 'denr123'),
+  ('Department of Health', 'DOH', 'doh123'),
+  ('Department of Labor and Employment', 'DOLE', 'dole123'),
+  ('Department of Public Works and Highways', 'DPWH', 'dpwh123'),
+  ('Department of Tourism', 'DOT', 'dot123'),
+  ('Department of Trade and Industry', 'DTI', 'dti123'),
+  ('Department of Transportation', 'DOTr', 'dotr123');
