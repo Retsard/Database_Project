@@ -11,95 +11,128 @@ ALTER USER db_admin SET search_path TO fis_sc;
 GRANT superadmin TO db_admin;
 GRANT ALL PRIVILEGES ON DATABASE fis_db TO db_admin;
 
-CREATE TABLE crop (crop_id SERIAL PRIMARY KEY, crop_type VARCHAR(50) NOT NULL, crop_name VARCHAR(50) NOT NULL, crop_description VARCHAR(200) NOT NULL, crop_image VARCHAR(255) NOT NULL, potential_yield INT NOT NULL, farm_gate_price INT);
+/* Tables
 
-CREATE TABLE farmer (farmer_id SERIAL PRIMARY KEY, first_name VARCHAR(50) NOT NULL, last_name VARCHAR(50) NOT NULL, age INT NOT NULL, ethnic_origin VARCHAR(50), image VARCHAR(255) NOT NULL);
+CREATE TABLE crop (
+  crop_id SERIAL PRIMARY KEY,
+  crop_type VARCHAR(50) NOT NULL,
+  crop_name VARCHAR(50) NOT NULL,
+  crop_description VARCHAR(200) NOT NULL,
+  crop_image VARCHAR(255) NOT NULL,
+  potential_yield INT NOT NULL,
+  farm_gate_price INT
+);
 
-CREATE TABLE address (address_id SERIAL PRIMARY KEY, street_name VARCHAR(50) NOT NULL, barangay_name VARCHAR(50) NOT NULL, city_name VARCHAR(50) NOT NULL, province_name VARCHAR(50) NOT NULL);
+CREATE TABLE farmer (
+  farmer_id SERIAL PRIMARY KEY,
+  first_name VARCHAR(50) NOT NULL,
+  last_name VARCHAR(50) NOT NULL,
+  age INT NOT NULL,
+  ethnic_origin VARCHAR(50),
+  image VARCHAR(255) NOT NULL
+);
 
-CREATE TABLE livestock (livestock_id SERIAL PRIMARY KEY, livestock_type VARCHAR(50) NOT NULL, livestock_description VARCHAR(50) NOT NULL, livestock_image VARCHAR(255) NOT NULL);
+CREATE TABLE city (
+  city_id SERIAL PRIMARY KEY,
+  city_name VARCHAR(50) NOT NULL
+);
 
-CREATE TABLE accounts (account_id SERIAL PRIMARY KEY, account_name VARCHAR(50) NOT NULL, username VARCHAR(50) NOT NULL, password VARCHAR(50) NOT NULL);
+CREATE TABLE barangay (
+  barangay_id SERIAL PRIMARY KEY,
+  barangay_name VARCHAR(50) NOT NULL,
+  city_id INT REFERENCES city(city_id)
+);
 
-CREATE TABLE farm (farm_id SERIAL PRIMARY KEY, farm_name VARCHAR(50) NOT NULL, farm_image VARCHAR(255) NOT NULL, farm_description VARCHAR(200) NOT NULL, area_size INT NOT NULL, farmer_id INT REFERENCES farmer(farmer_id), crop_id INT REFERENCES crop(crop_id), livestock_id INT REFERENCES livestock(livestock_id), address_id INT REFERENCES address(address_id));
+CREATE TABLE address (
+  address_id SERIAL PRIMARY KEY,
+  barangay_id INT REFERENCES barangay(barangay_id),
+  city_id INT REFERENCES city(city_id)
+);
 
-CREATE VIEW farm_details_view AS 
-SELECT f.farm_id, f.farm_name, f.farm_image, f.farm_description, f.area_size, fa.first_name, fa.last_name, fa.age, fa.ethnic_origin, fa.image, ad.street_name, ad.barangay_name, ad.city_name, ad.province_name 
-FROM farm f 
-JOIN farmer fa ON f.farmer_id = fa.farmer_id 
-JOIN address ad ON f.address_id = ad.address_id;
+CREATE TABLE livestock (
+  livestock_id SERIAL PRIMARY KEY,
+  livestock_type VARCHAR(50) NOT NULL,
+  livestock_description VARCHAR(50) NOT NULL,
+  livestock_image VARCHAR(255) NOT NULL
+);
 
-CREATE VIEW farm_view AS 
-SELECT farm_id, farm_name, farm_image, farm_description, area_size, farmer_id, crop_id, livestock_id, address_id
-FROM farm;
+CREATE TABLE accounts (
+  account_id SERIAL PRIMARY KEY,
+  account_name VARCHAR(50) NOT NULL,
+  username VARCHAR(50) NOT NULL,
+  PASSWORD VARCHAR(50) NOT NULL
+);
 
-CREATE VIEW farmer_view AS 
-SELECT farmer_id, first_name, last_name, age, ethnic_origin, image
-FROM farmer;
+CREATE TABLE farm (
+  farm_id SERIAL PRIMARY KEY,
+  farm_name VARCHAR(50) NOT NULL,
+  farm_image VARCHAR(255) NOT NULL,
+  farm_description VARCHAR(200) NOT NULL,
+  area_size INT NOT NULL,
+  farmer_id INT REFERENCES farmer(farmer_id),
+  address_id INT REFERENCES address(address_id)
+);
 
-CREATE VIEW livestock_view AS 
-SELECT livestock_id, livestock_type, livestock_description, livestock_image 
-FROM livestock;
+CREATE TABLE farm_crop (
+  farm_id INT REFERENCES farm(farm_id),
+  crop_id INT REFERENCES crop(crop_id),
+  PRIMARY KEY (farm_id, crop_id)
+);
 
-CREATE VIEW crop_view AS 
-SELECT crop_id, crop_type, crop_name, crop_description, crop_image, potential_yield, farm_gate_price
-FROM crop;
+CREATE TABLE farm_livestock (
+  farm_id INT REFERENCES farm(farm_id),
+  livestock_id INT REFERENCES livestock(livestock_id),
+  PRIMARY KEY (farm_id, livestock_id)
+);
 
-CREATE VIEW crop_yield_view AS 
-SELECT crop_id, crop_type, crop_name, potential_yield 
-FROM crop;
+*/
 
-CREATE VIEW farm_livestock_view AS 
-SELECT f.farm_id, f.farm_name, l.livestock_type 
-FROM farm f 
-JOIN livestock l ON f.livestock_id = l.livestock_id;
 
-CREATE VIEW farm_address_view AS 
-SELECT f.farmer_id, f.first_name, f.last_name, f.age, a.street_name, a.barangay_name, a.city_name, a.province_name
-FROM farmer f
-JOIN farm fm ON f.farmer_id = fm.farmer_id
-JOIN address a ON fm.address_id = a.address_id;
 
-CREATE VIEW crop_average_yield_view AS
-SELECT crop_id, crop_type, crop_name, AVG(potential_yield) AS average_yield
-FROM crop
-GROUP BY crop_id, crop_type, crop_name;
-
+// Manage role
 CREATE ROLE manage LOGIN;
 GRANT CONNECT ON DATABASE fis_db TO manage;
 GRANT USAGE ON SCHEMA fis_sc TO manage;
-GRANT INSERT, SELECT, UPDATE ON TABLE fis_sc.address TO manage;
+
+// Privileges
 GRANT INSERT, SELECT, UPDATE ON TABLE fis_sc.crop TO manage;
-GRANT INSERT, SELECT, UPDATE ON TABLE fis_sc.farm TO manage;
 GRANT INSERT, SELECT, UPDATE ON TABLE fis_sc.farmer TO manage;
+GRANT INSERT, SELECT, UPDATE ON TABLE fis_sc.city TO manage;
+GRANT INSERT, SELECT, UPDATE ON TABLE fis_sc.barangay TO manage;
+GRANT INSERT, SELECT, UPDATE ON TABLE fis_sc.address TO manage;
 GRANT INSERT, SELECT, UPDATE ON TABLE fis_sc.livestock TO manage;
+GRANT INSERT, SELECT, UPDATE ON TABLE fis_sc.farm TO manage;
+GRANT INSERT, SELECT, UPDATE ON TABLE fis_sc.farm_crop TO manage;
+GRANT INSERT, SELECT, UPDATE ON TABLE fis_sc.farm_livestock TO manage;
+
+// Auto Increment when Inserting data
 GRANT USAGE, SELECT, UPDATE ON SEQUENCE crop_crop_id_seq TO manage;
 GRANT USAGE, SELECT, UPDATE ON SEQUENCE farmer_farmer_id_seq TO manage;
+GRANT USAGE, SELECT, UPDATE ON SEQUENCE city_city_id_seq TO manage;
+GRANT USAGE, SELECT, UPDATE ON SEQUENCE barangay_barangay_id_seq TO manage;
 GRANT USAGE, SELECT, UPDATE ON SEQUENCE address_address_id_seq TO manage;
-GRANT USAGE, SELECT, UPDATE ON SEQUENCE farm_farm_id_seq TO manage;
 GRANT USAGE, SELECT, UPDATE ON SEQUENCE livestock_livestock_id_seq TO manage;
-GRANT SELECT ON TABLE fis_sc.crop_average_yield_view TO manage;
-GRANT SELECT ON TABLE fis_sc.crop_yield_view TO manage;
-GRANT SELECT ON TABLE fis_sc.farm_address_view TO manage;
-GRANT SELECT ON TABLE fis_sc.farm_details_view TO manage;
-GRANT SELECT ON TABLE fis_sc.farm_livestock_view TO manage;
-GRANT SELECT ON TABLE fis_sc.crop_view TO manage;
-GRANT SELECT ON TABLE fis_sc.farm_view TO manage;
-GRANT SELECT ON TABLE fis_sc.farmer_view TO manage;
-GRANT SELECT ON TABLE fis_sc.livestock_view TO manage;
+GRANT USAGE, SELECT, UPDATE ON SEQUENCE farm_farm_id_seq TO manage;
+
+// Privileges to View Tables
+GRANT SELECT ON TABLE fis_sc.crop_prices TO manage;
+GRANT SELECT ON TABLE fis_sc.crop_types_with_names TO manage;
+GRANT SELECT ON TABLE fis_sc.farmers_with_farms TO manage;
+GRANT SELECT ON TABLE fis_sc.farms_with_crops TO manage;
+GRANT SELECT ON TABLE fis_sc.farms_with_crops_and_location TO manage;
+GRANT SELECT ON TABLE fis_sc.farms_with_livestock TO manage;
+GRANT SELECT ON TABLE fis_sc.farms_with_locations TO manage;
 
 CREATE ROLE view LOGIN;
 GRANT CONNECT ON DATABASE fis_db TO view;
 GRANT USAGE ON SCHEMA fis_sc TO view;
-GRANT SELECT ON TABLE fis_sc.crop_average_yield_view TO view;
-GRANT SELECT ON TABLE fis_sc.crop_yield_view TO view;
-GRANT SELECT ON TABLE fis_sc.farm_address_view TO view;
-GRANT SELECT ON TABLE fis_sc.farm_details_view TO view;
-GRANT SELECT ON TABLE fis_sc.farm_livestock_view TO view;
-GRANT SELECT ON TABLE fis_sc.crop_view TO view;
-GRANT SELECT ON TABLE fis_sc.farm_view TO view;
-GRANT SELECT ON TABLE fis_sc.farmer_view TO view;
-GRANT SELECT ON TABLE fis_sc.livestock_view TO view;
+GRANT SELECT ON TABLE fis_sc.crop_prices TO view;
+GRANT SELECT ON TABLE fis_sc.crop_types_with_names TO view;
+GRANT SELECT ON TABLE fis_sc.farmers_with_farms TO view;
+GRANT SELECT ON TABLE fis_sc.farms_with_crops TO view;
+GRANT SELECT ON TABLE fis_sc.farms_with_crops_and_location TO view;
+GRANT SELECT ON TABLE fis_sc.farms_with_livestock TO view;
+GRANT SELECT ON TABLE fis_sc.farms_with_locations TO view;
 
 CREATE USER manager WITH PASSWORD 'Dbadmin123!';
 ALTER USER manager SET search_path TO fis_sc;
@@ -111,86 +144,146 @@ GRANT view TO viewer;
 
 // Populating the Database
 
+// City Table
+INSERT INTO city (city_name)
+VALUES ('Davao City'), ('General Santos City');
+
+// Barangay Table
+INSERT INTO barangay (barangay_name, city_id)
+VALUES ('Lagao', 2), ('San Isidro', 2), ('Calumpang', 2), ('Maa', 1), ('Catalunan Grande', 1), ('Matina Aplaya', 1);
+
+// Address Table
+INSERT INTO address (barangay_id, city_id)
+VALUES (1, 2), (2, 2), (3, 2), (4, 1), (5, 1), (6,1);
+
 // Crop Table
 INSERT INTO crop (crop_type, crop_name, crop_description, crop_image, potential_yield, farm_gate_price)
-VALUES
-  ('Fruit', 'Apple', 'Red and juicy', 'apple.jpg', 100, 5),
-  ('Vegetable', 'Tomato', 'Red and flavorful', 'tomato.jpg', 80, 3),
-  ('Grain', 'Rice', 'Staple food crop', 'rice.jpg', 150, 2),
-  ('Vegetable', 'Carrot', 'Orange root vegetable', 'carrot.jpg', 60, 4),
-  ('Legume', 'Lentil', 'Nutritious pulse crop', 'lentil.jpg', 90, 6),
-  ('Fruit', 'Banana', 'Yellow and curved', 'banana.jpg', 120, 3),
-  ('Grain', 'Wheat', 'Common cereal grain', 'wheat.jpg', 130, 5),
-  ('Vegetable', 'Spinach', 'Leafy green', 'spinach.jpg', 50, 3),
-  ('Fruit', 'Orange', 'Citrus fruit', 'orange.jpg', 80, 4),
-  ('Fruit', 'Papaya', 'Sweet and Tasty', 'papaya.jpg', 70, 6);
+VALUES ('Fruit', 'Apple', 'Red and juicy apples', 'apple.jpg', 100, 2),
+        ('Vegetable', 'Carrot', 'Orange carrots', 'carrot.jpg', 80, 3),
+        ('Grain', 'Rice', 'Long-grain white rice', 'rice.jpg', 200, 5),
+        ('Fruit', 'Orange', 'Sweet and tangy oranges', 'orange.jpg', 90, 4),
+        ('Vegetable', 'Tomato', 'Fresh and ripe tomatoes', 'tomato.jpg', 70, 3),
+        ('Grain', 'Wheat', 'Nutritious wheat grains', 'wheat.jpg', 180, 6),
+        ('Fruit', 'Mango', 'Juicy tropical mangoes', 'mango.jpg', 120, 3),
+        ('Vegetable', 'Lettuce', 'Crisp and leafy lettuce', 'lettuce.jpg', 60, 2),
+        ('Grain', 'Corn', 'Golden and delicious corn', 'corn.jpg', 150, 4),
+        ('Fruit', 'Grapes', 'Plump and sweet grapes', 'grapes.jpg', 110, 5);
 
 // Farmer Table
 INSERT INTO farmer (first_name, last_name, age, ethnic_origin, image)
-VALUES
-  ('John', 'Doe', 30, 'Caucasian', 'john_doe.jpg'),
-  ('Jane', 'Smith', 35, 'African American', 'jane_smith.jpg'),
-  ('Michael', 'Johnson', 28, 'Hispanic', 'michael_johnson.jpg'),
-  ('Emily', 'Brown', 32, 'Asian', 'emily_brown.jpg'),
-  ('William', 'Davis', 40, 'Caucasian', 'william_davis.jpg'),
-  ('Olivia', 'Wilson', 27, 'African American', 'olivia_wilson.jpg'),
-  ('James', 'Taylor', 38, 'Hispanic', 'james_taylor.jpg'),
-  ('Sophia', 'Anderson', 33, 'Asian', 'sophia_anderson.jpg'),
-  ('Benjamin', 'Thomas', 36, 'Caucasian', 'benjamin_thomas.jpg'),
-  ('Ava', 'Martinez', 31, 'Hispanic', 'ava_martinez.jpg');
-
-// Address Table
-INSERT INTO address (street_name, barangay_name, city_name, province_name)
-VALUES
-  ('123 Main St', 'Lagao', 'General Santos City', 'South Cotabato'),
-  ('456 Elm St', 'San Isidro', 'General Santos City', 'South Cotabato'),
-  ('789 Oak St', 'Puan', 'Davao City', 'Davao Del Sur'),
-  ('321 Maple St', 'Toril', 'Davao City', 'Davao Del Suer'),
-  ('654 Pine St', 'Dela Paz', 'Antipolo', 'Rizal'),
-  ('987 Cedar St', 'Inarawan', 'Antipolo', 'Rizal'),
-  ('135 Walnut St', 'Balintawak', 'Quezon City', 'NCR'),
-  ('864 Birch St', 'Balingasa', 'Quezon City', 'NCR'),
-  ('279 Cherry St', 'Don Bosco', 'Parañaque', 'Rizal'),
-  ('576 Mango St', 'Don Galo', 'Parañaque', 'Rizal');
+VALUES ('John', 'Doe', 35, 'Caucasian', 'john.jpg'),
+        ('Maria', 'Garcia', 28, 'Hispanic', 'maria.jpg'),
+        ('David', 'Smith', 42, 'African American', 'david.jpg'),
+        ('Sarah', 'Johnson', 31, 'Asian', 'sarah.jpg'),
+        ('Michael', 'Brown', 39, 'Caucasian', 'michael.jpg'),
+        ('Emily', 'Lee', 26, 'Asian', 'emily.jpg'),
+        ('Daniel', 'Taylor', 34, 'African American', 'daniel.jpg'),
+        ('Sophia', 'Clark', 29, 'Hispanic', 'sophia.jpg'),
+        ('Matthew', 'Rodriguez', 37, 'Caucasian', 'matthew.jpg'),
+        ('Olivia', 'Martinez', 33, 'Hispanic', 'olivia.jpg');
 
 // Livestock Table
 INSERT INTO livestock (livestock_type, livestock_description, livestock_image)
-VALUES
-  ('Cattle', 'Large domesticated bovine animals', 'cattle.jpg'),
-  ('Pig', 'Domesticated mammal', 'pig.jpg'),
-  ('Chicken', 'Domesticated fowl', 'chicken.jpg'),
-  ('Sheep', 'Domesticated ruminant mammal', 'sheep.jpg'),
-  ('Goat', 'Domesticated mammal', 'goat.jpg'),
-  ('Duck', 'Waterfowl', 'duck.jpg'),
-  ('Turkey', 'Large poultry bird', 'turkey.jpg'),
-  ('Horse', 'Domesticated equine animal', 'horse.jpg'),
-  ('Rabbit', 'Small mammals', 'rabbit.jpg'),
-  ('Donkey', 'Domesticated mammal', 'donkey.jpg');
+VALUES ('Cattle', 'Black Angus cattle', 'cattle.jpg'),
+        ('Chicken', 'Free-range chickens', 'chicken.jpg'),
+        ('Pig', 'Large white pigs', 'pig.jpg'),
+        ('Sheep', 'Merino sheep', 'sheep.jpg'),
+        ('Horse', 'Thoroughbred horses', 'horse.jpg'),
+        ('Goat', 'Boer goats', 'goat.jpg'),
+        ('Duck', 'Peking ducks', 'duck.jpg'),
+        ('Rabbit', 'Flemish Giant rabbits', 'rabbit.jpg'),
+        ('Turkey', 'Broad-Breasted Bronze turkeys', 'turkey.jpg'),
+        ('Bee', 'Honey bees', 'bee.jpg');
 
 // Farm Table
-INSERT INTO farm (farm_name, farm_image, farm_description, area_size, farmer_id, crop_id, livestock_id, address_id)
-VALUES
-  ('Green Acres Farm', 'green_acres.jpg', 'Family-owned farm', 10, 1, 1, 1, 1),
-  ('Organic Harmony Farm', 'organic_harmony.jpg', 'Organic farm', 20, 2, 2, 2, 2),
-  ('Sustainable Meadows Farm', 'sustainable_meadows.jpg', 'Sustainable farm', 15, 3, 3, 3, 3),
-  ('Golden Harvest Farm', 'golden_harvest.jpg', 'Commercial farm', 30, 4, 4, 4, 4),
-  ('Small Blessings Farm', 'small_blessings.jpg', 'Small-scale farm', 8, 5, 5, 5, 5),
-  ('Diverse Fields Farm', 'diverse_fields.jpg', 'Diversified farm', 25, 6, 6, 6, 6),
-  ('Livestock Haven Farm', 'livestock_haven.jpg', 'Livestock farm', 18, 7, 7, 7, 7),
-  ('Community Roots Farm', 'community_roots.jpg', 'Community farm', 12, 8, 8, 8, 8),
-  ('Urban Oasis Farm', 'urban_oasis.jpg', 'Urban farm', 7, 9, 9, 9, 9),
-  ('Hobby Haven Farm', 'hobby_haven.jpg', 'Hobby farm', 5, 10, 10, 10, 10);
-  
+INSERT INTO farm (farm_name, farm_image, farm_description, area_size, farmer_id, address_id)
+VALUES ('Green Valley Farm', 'greenvalleyfarm.jpg', 'A large farm with diverse crops and livestock', 500, 1, 6),
+ 	      ('Organic Harvest Farm', 'organicharvestfarm.jpg', 'Specializes in organic vegetables', 300, 2, 5),
+ 	      ('Golden Grain Farm', 'goldengrainfarm.jpg', 'Produces high-quality grains', 700, 3, 4),
+ 	      ('Fruitful Orchards', 'fruitfulorchards.jpg', 'Focuses on fruit orchards', 400, 4, 1),
+ 	      ('Nature Bounty Farm', 'naturesbountyfarm.jpg', 'Mixed farm with various crops and livestock', 600, 5, 2),
+ 	      ('Sunrise Farms', 'sunrisefarms.jpg', 'Family-owned farm specializing in poultry and eggs', 250, 6, 3),
+ 	      ('Green Acres Farm', 'greenacresfarm.jpg', 'Dedicated to sustainable farming practices', 450, 7, 2),
+ 	      ('Harvest Moon Farm', 'harvestmoonfarm.jpg', 'Produces a variety of seasonal fruits and vegetables', 350, 8, 4),
+ 	      ('Windy Hill Farm', 'windyhillfarm.jpg', 'Breeding and raising dairy cows for milk production', 550, 9, 6),
+ 	      ('Golden Vineyard Farm', 'goldenvineyardfarm.jpg', 'Vineyard specializing in wine grape cultivation', 200, 10, 1);
+
 // Accounts Table
 INSERT INTO accounts (account_name, username, password)
-VALUES
-  ('Department of Agrarian Reform', 'DAR', 'dar123'),
-  ('Department of Agriculture', 'DA', 'da123'),
-  ('Department of Budget and Management', 'DBM', 'dbm123'),
-  ('Department of Environment and Natural Resources', 'DENR', 'denr123'),
-  ('Department of Health', 'DOH', 'doh123'),
-  ('Department of Labor and Employment', 'DOLE', 'dole123'),
-  ('Department of Public Works and Highways', 'DPWH', 'dpwh123'),
-  ('Department of Tourism', 'DOT', 'dot123'),
-  ('Department of Trade and Industry', 'DTI', 'dti123'),
-  ('Department of Transportation', 'DOTr', 'dotr123');
+VALUES ('Department of Tourism', 'DOt', 'dot123'),
+       ('Department of Agrarian Reform', 'DAR', 'dar123'),
+       ('Department of Agriculture', 'DA', 'da123'),
+       ('Department of Environment and Natural Resources', 'DENR', 'denr123'),
+       ('Department of Trade and Industry', 'DTI', 'dti123');
+
+// Farm and Livestock Table
+INSERT INTO farm_livestock (farm_id, livestock_id)
+VALUES (2, 1), (4, 2), (6, 3), (8, 4), (10, 5), (1, 6), (3, 7), (5, 8), (7, 9), (9, 10), (2, 10), (4, 9), (6, 8), (8, 7), (10, 6), (1, 5), (3, 4), (5, 3), (7, 2), (9, 1), (2, 2), (4, 4), (6, 6), (8, 6), (10, 10);
+
+// Farm and Crop Table
+INSERT INTO farm_crop (farm_id, crop_id)
+VALUES (2, 1), (4, 2), (6, 3), (8, 4), (10, 5), (1, 6), (3, 7), (5, 8), (7, 9), (9, 10), (2, 10), (4, 9), (6, 8), (8, 7), (10, 6), (1, 5), (3, 4), (5, 3), (7, 2), (9, 1), (2, 2), (4, 4), (6, 6), (8, 6), (10, 10);
+
+
+// Views
+
+// Farms and their Livestocks
+CREATE VIEW farms_with_livestock AS
+SELECT f.farm_id, f.farm_name, STRING_AGG(l.livestock_type, ', ') AS livestock_types
+FROM farm f
+JOIN farm_livestock fl ON f.farm_id = fl.farm_id
+JOIN livestock l ON fl.livestock_id = l.livestock_id
+GROUP BY f.farm_id, f.farm_name
+ORDER BY f.farm_id ASC;
+
+// Farms and their Crops
+CREATE VIEW farms_with_crops AS
+SELECT f.farm_id, f.farm_name, STRING_AGG(c.crop_name, ', ') AS crop_names
+FROM farm f
+JOIN farm_crop fc ON f.farm_id = fc.farm_id
+JOIN crop c ON fc.crop_id = c.crop_id
+GROUP BY f.farm_id, f.farm_name
+ORDER BY f.farm_id ASC;
+
+//Crop Prices
+CREATE VIEW crop_prices AS
+SELECT f.farm_name, c.crop_name, c.farm_gate_price
+FROM crop c
+JOIN farm_crop fc ON c.crop_id = fc.crop_id
+JOIN farm f ON fc.farm_id = f.farm_id
+ORDER BY f.farm_name, c.crop_name;
+
+// Farmers and their Farms
+CREATE VIEW farmers_with_farms AS
+SELECT CONCAT(f.first_name, ' ', f.last_name) AS farmer_name, farm.farm_name
+FROM farmer f
+JOIN farm ON f.farmer_id = farm.farmer_id;
+
+// Farms and their Locations
+CREATE VIEW farms_with_locations AS
+SELECT farm.farm_name, barangay.barangay_name, city.city_name
+FROM farm
+JOIN address ON farm.address_id = address.address_id
+JOIN barangay ON address.barangay_id = barangay.barangay_id
+JOIN city ON barangay.city_id = city.city_id;
+
+// Farms with their Crops and Location
+CREATE VIEW farms_with_crops_and_location AS
+SELECT farm.farm_name, string_agg(crop.crop_name, ', ') AS crops, barangay.barangay_name, city.city_name
+FROM farm
+JOIN farm_crop ON farm.farm_id = farm_crop.farm_id
+JOIN crop ON farm_crop.crop_id = crop.crop_id
+JOIN address ON farm.address_id = address.address_id
+JOIN barangay ON address.barangay_id = barangay.barangay_id
+JOIN city ON barangay.city_id = city.city_id
+GROUP BY farm.farm_id, barangay.barangay_name, city.city_name;
+
+// Crop types and the name of the crops
+CREATE VIEW crop_types_with_names AS
+SELECT crop_type, string_agg(crop_name, ', ') AS crop_names
+FROM crop
+GROUP BY crop_type;
+
+
+
+
