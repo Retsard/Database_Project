@@ -78,15 +78,15 @@ GRANT USAGE, SELECT, UPDATE ON SEQUENCE farmer_farmer_id_seq TO manage;
 GRANT USAGE, SELECT, UPDATE ON SEQUENCE address_address_id_seq TO manage;
 GRANT USAGE, SELECT, UPDATE ON SEQUENCE farm_farm_id_seq TO manage;
 GRANT USAGE, SELECT, UPDATE ON SEQUENCE livestock_livestock_id_seq TO manage;
-GRANT SELECT ON TABLE fis_sc.crop_average_yield_view TO view;
-GRANT SELECT ON TABLE fis_sc.crop_yield_view TO view;
-GRANT SELECT ON TABLE fis_sc.farm_address_view TO view;
-GRANT SELECT ON TABLE fis_sc.farm_details_view TO view;
-GRANT SELECT ON TABLE fis_sc.farm_livestock_view TO view;
-GRANT SELECT ON TABLE fis_sc.crop_view TO view;
-GRANT SELECT ON TABLE fis_sc.farm_view TO view;
-GRANT SELECT ON TABLE fis_sc.farmer_view TO view;
-GRANT SELECT ON TABLE fis_sc.livestock_view TO view
+GRANT SELECT ON TABLE fis_sc.crop_average_yield_view TO manage;
+GRANT SELECT ON TABLE fis_sc.crop_yield_view TO manage;
+GRANT SELECT ON TABLE fis_sc.farm_address_view TO manage;
+GRANT SELECT ON TABLE fis_sc.farm_details_view TO manage;
+GRANT SELECT ON TABLE fis_sc.farm_livestock_view TO manage;
+GRANT SELECT ON TABLE fis_sc.crop_view TO manage;
+GRANT SELECT ON TABLE fis_sc.farm_view TO manage;
+GRANT SELECT ON TABLE fis_sc.farmer_view TO manage;
+GRANT SELECT ON TABLE fis_sc.livestock_view TO manage;
 
 CREATE ROLE view LOGIN;
 GRANT CONNECT ON DATABASE fis_db TO view;
