@@ -123,6 +123,7 @@ GRANT SELECT ON TABLE fis_sc.farms_with_crops_and_location TO manage;
 GRANT SELECT ON TABLE fis_sc.farms_with_livestock TO manage;
 GRANT SELECT ON TABLE fis_sc.farms_with_locations TO manage;
 
+// View Role
 CREATE ROLE view LOGIN;
 GRANT CONNECT ON DATABASE fis_db TO view;
 GRANT USAGE ON SCHEMA fis_sc TO view;
