@@ -83,6 +83,32 @@ CREATE TABLE farm_livestock (
   PRIMARY KEY (farm_id, livestock_id)
 );
 
+CREATE VIEW crop_view AS
+SELECT crop_id, crop_type, crop_name, crop_description, crop_image,
+       potential_yield, farm_gate_price
+FROM crop;
+
+CREATE VIEW farmer_view AS
+SELECT farmer_id, first_name, last_name, age, ethnic_origin, image
+FROM farmer;
+
+CREATE VIEW city_view AS
+SELECT city_id, city_name
+FROM city;
+
+CREATE VIEW livestock_view AS
+SELECT livestock_id, livestock_type, livestock_description, livestock_image
+FROM livestock;
+
+CREATE VIEW farm_view AS
+SELECT f.farm_id, f.farm_name, f.farm_image, f.farm_description, f.area_size,
+       fi.first_name || ' ' || fi.last_name AS farmer_name,
+       ci.city_name || ', ' || bi.barangay_name AS address
+FROM farm f
+INNER JOIN farmer fi ON f.farmer_id = fi.farmer_id
+INNER JOIN address a ON f.address_id = a.address_id
+INNER JOIN barangay bi ON a.barangay_id = bi.barangay_id
+INNER JOIN city ci ON bi.city_id = ci.city_id;
 
 
 CREATE VIEW farms_with_livestock AS
