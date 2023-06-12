@@ -87,6 +87,64 @@ CREATE TABLE farm_livestock (
 
 */
 
+// Views
+
+// Farms and their Livestocks
+CREATE VIEW farms_with_livestock AS
+SELECT f.farm_id, f.farm_name, STRING_AGG(l.livestock_type, ', ') AS livestock_types
+FROM farm f
+JOIN farm_livestock fl ON f.farm_id = fl.farm_id
+JOIN livestock l ON fl.livestock_id = l.livestock_id
+GROUP BY f.farm_id, f.farm_name
+ORDER BY f.farm_id ASC;
+
+// Farms and their Crops
+CREATE VIEW farms_with_crops AS
+SELECT f.farm_id, f.farm_name, STRING_AGG(c.crop_name, ', ') AS crop_names
+FROM farm f
+JOIN farm_crop fc ON f.farm_id = fc.farm_id
+JOIN crop c ON fc.crop_id = c.crop_id
+GROUP BY f.farm_id, f.farm_name
+ORDER BY f.farm_id ASC;
+
+//Crop Prices
+CREATE VIEW crop_prices AS
+SELECT f.farm_name, c.crop_name, c.farm_gate_price
+FROM crop c
+JOIN farm_crop fc ON c.crop_id = fc.crop_id
+JOIN farm f ON fc.farm_id = f.farm_id
+ORDER BY f.farm_name, c.crop_name;
+
+// Farmers and their Farms
+CREATE VIEW farmers_with_farms AS
+SELECT CONCAT(f.first_name, ' ', f.last_name) AS farmer_name, farm.farm_name
+FROM farmer f
+JOIN farm ON f.farmer_id = farm.farmer_id;
+
+// Farms and their Locations
+CREATE VIEW farms_with_locations AS
+SELECT farm.farm_name, barangay.barangay_name, city.city_name
+FROM farm
+JOIN address ON farm.address_id = address.address_id
+JOIN barangay ON address.barangay_id = barangay.barangay_id
+JOIN city ON barangay.city_id = city.city_id;
+
+// Farms with their Crops and Location
+CREATE VIEW farms_with_crops_and_location AS
+SELECT farm.farm_name, string_agg(crop.crop_name, ', ') AS crops, barangay.barangay_name, city.city_name
+FROM farm
+JOIN farm_crop ON farm.farm_id = farm_crop.farm_id
+JOIN crop ON farm_crop.crop_id = crop.crop_id
+JOIN address ON farm.address_id = address.address_id
+JOIN barangay ON address.barangay_id = barangay.barangay_id
+JOIN city ON barangay.city_id = city.city_id
+GROUP BY farm.farm_id, barangay.barangay_name, city.city_name;
+
+// Crop types and the name of the crops
+CREATE VIEW crop_types_with_names AS
+SELECT crop_type, string_agg(crop_name, ', ') AS crop_names
+FROM crop
+GROUP BY crop_type;
 
 
 // Manage role
@@ -224,66 +282,6 @@ VALUES (2, 1), (4, 2), (6, 3), (8, 4), (10, 5), (1, 6), (3, 7), (5, 8), (7, 9), 
 // Farm and Crop Table
 INSERT INTO farm_crop (farm_id, crop_id)
 VALUES (2, 1), (4, 2), (6, 3), (8, 4), (10, 5), (1, 6), (3, 7), (5, 8), (7, 9), (9, 10), (2, 10), (4, 9), (6, 8), (8, 7), (10, 6), (1, 5), (3, 4), (5, 3), (7, 2), (9, 1), (2, 2), (4, 4), (6, 6), (8, 6), (10, 10);
-
-
-// Views
-
-// Farms and their Livestocks
-CREATE VIEW farms_with_livestock AS
-SELECT f.farm_id, f.farm_name, STRING_AGG(l.livestock_type, ', ') AS livestock_types
-FROM farm f
-JOIN farm_livestock fl ON f.farm_id = fl.farm_id
-JOIN livestock l ON fl.livestock_id = l.livestock_id
-GROUP BY f.farm_id, f.farm_name
-ORDER BY f.farm_id ASC;
-
-// Farms and their Crops
-CREATE VIEW farms_with_crops AS
-SELECT f.farm_id, f.farm_name, STRING_AGG(c.crop_name, ', ') AS crop_names
-FROM farm f
-JOIN farm_crop fc ON f.farm_id = fc.farm_id
-JOIN crop c ON fc.crop_id = c.crop_id
-GROUP BY f.farm_id, f.farm_name
-ORDER BY f.farm_id ASC;
-
-//Crop Prices
-CREATE VIEW crop_prices AS
-SELECT f.farm_name, c.crop_name, c.farm_gate_price
-FROM crop c
-JOIN farm_crop fc ON c.crop_id = fc.crop_id
-JOIN farm f ON fc.farm_id = f.farm_id
-ORDER BY f.farm_name, c.crop_name;
-
-// Farmers and their Farms
-CREATE VIEW farmers_with_farms AS
-SELECT CONCAT(f.first_name, ' ', f.last_name) AS farmer_name, farm.farm_name
-FROM farmer f
-JOIN farm ON f.farmer_id = farm.farmer_id;
-
-// Farms and their Locations
-CREATE VIEW farms_with_locations AS
-SELECT farm.farm_name, barangay.barangay_name, city.city_name
-FROM farm
-JOIN address ON farm.address_id = address.address_id
-JOIN barangay ON address.barangay_id = barangay.barangay_id
-JOIN city ON barangay.city_id = city.city_id;
-
-// Farms with their Crops and Location
-CREATE VIEW farms_with_crops_and_location AS
-SELECT farm.farm_name, string_agg(crop.crop_name, ', ') AS crops, barangay.barangay_name, city.city_name
-FROM farm
-JOIN farm_crop ON farm.farm_id = farm_crop.farm_id
-JOIN crop ON farm_crop.crop_id = crop.crop_id
-JOIN address ON farm.address_id = address.address_id
-JOIN barangay ON address.barangay_id = barangay.barangay_id
-JOIN city ON barangay.city_id = city.city_id
-GROUP BY farm.farm_id, barangay.barangay_name, city.city_name;
-
-// Crop types and the name of the crops
-CREATE VIEW crop_types_with_names AS
-SELECT crop_type, string_agg(crop_name, ', ') AS crop_names
-FROM crop
-GROUP BY crop_type;
 
 
 
