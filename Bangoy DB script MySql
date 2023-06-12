@@ -130,4 +130,23 @@ FROM crop
 GROUP BY crop_type;
 
 
+DROP TRIGGER IF EXISTS validate_farmer_age_trigger;
+
+DELIMITER //
+CREATE TRIGGER validate_farmer_age_trigger
+BEFORE INSERT ON farmer
+FOR EACH ROW
+BEGIN
+  IF NEW.age < 18 THEN
+    SIGNAL SQLSTATE '45000'
+      SET MESSAGE_TEXT = 'Invalid farmer age. The farmer must be 18 years or older.';
+  END IF;
+END//
+DELIMITER ;
+
+
+
+
+
+
 
