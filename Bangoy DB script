@@ -194,7 +194,11 @@ GRANT USAGE, SELECT, UPDATE ON SEQUENCE address_address_id_seq TO manage;
 GRANT USAGE, SELECT, UPDATE ON SEQUENCE livestock_livestock_id_seq TO manage;
 GRANT USAGE, SELECT, UPDATE ON SEQUENCE farm_farm_id_seq TO manage;
 
-
+GRANT SELECT ON fis_db.crop_view TO manage;
+GRANT SELECT ON fis_db.address_view TO manage;
+GRANT SELECT ON fis_db.livestock_view TO manage;
+GRANT SELECT ON fis_db.farm_view TO manage;
+GRANT SELECT ON fis_db.farmer_view TO manage;
 GRANT SELECT ON TABLE fis_sc.crop_prices TO manage;
 GRANT SELECT ON TABLE fis_sc.crop_types_with_names TO manage;
 GRANT SELECT ON TABLE fis_sc.farmers_with_farms TO manage;
@@ -207,6 +211,12 @@ GRANT SELECT ON TABLE fis_sc.farms_with_locations TO manage;
 CREATE ROLE view LOGIN;
 GRANT CONNECT ON DATABASE fis_db TO view;
 GRANT USAGE ON SCHEMA fis_sc TO view;
+
+GRANT SELECT ON fis_db.crop_view TO view;
+GRANT SELECT ON fis_db.address_view TO view;
+GRANT SELECT ON fis_db.livestock_view TO view;
+GRANT SELECT ON fis_db.farm_view TO view;
+GRANT SELECT ON fis_db.farmer_view TO view;
 GRANT SELECT ON TABLE fis_sc.crop_prices TO view;
 GRANT SELECT ON TABLE fis_sc.crop_types_with_names TO view;
 GRANT SELECT ON TABLE fis_sc.farmers_with_farms TO view;
