@@ -144,27 +144,30 @@ BEGIN
 END//
 DELIMITER ;
 
-CREATE USER 'manage'@'localhost' IDENTIFIED BY 'Dbadmin123!';
+CREATE ROLE manage;
 
-GRANT INSERT, SELECT, UPDATE ON fis_db.crop TO 'manage'@'localhost';
-GRANT INSERT, SELECT, UPDATE ON fis_db.farmer TO 'manage'@'localhost';
-GRANT INSERT, SELECT, UPDATE ON fis_db.city TO 'manage'@'localhost';
-GRANT INSERT, SELECT, UPDATE ON fis_db.barangay TO 'manage'@'localhost';
-GRANT INSERT, SELECT, UPDATE ON fis_db.address TO 'manage'@'localhost';
-GRANT INSERT, SELECT, UPDATE ON fis_db.livestock TO 'manage'@'localhost';
-GRANT INSERT, SELECT, UPDATE ON fis_db.farm TO 'manage'@'localhost';
-GRANT INSERT, SELECT, UPDATE ON fis_db.farm_crop TO 'manage'@'localhost';
-GRANT INSERT, SELECT, UPDATE ON fis_db.farm_livestock TO 'manage'@'localhost';
+GRANT INSERT, SELECT, UPDATE ON fis_db.crop TO manage;
+GRANT INSERT, SELECT, UPDATE ON fis_db.farmer TO manage;
+GRANT INSERT, SELECT, UPDATE ON fis_db.city TO manage;
+GRANT INSERT, SELECT, UPDATE ON fis_db.barangay TO manage;
+GRANT INSERT, SELECT, UPDATE ON fis_db.address TO manage;
+GRANT INSERT, SELECT, UPDATE ON fis_db.livestock TO manage;
+GRANT INSERT, SELECT, UPDATE ON fis_db.farm TO manage;
+GRANT INSERT, SELECT, UPDATE ON fis_db.farm_crop TO manage;
+GRANT INSERT, SELECT, UPDATE ON fis_db.farm_livestock TO manage;
 
-GRANT SELECT ON fis_db.crop_prices TO 'manage'@'localhost';
-GRANT SELECT ON fis_db.crop_types_with_names TO 'manage'@'localhost';
-GRANT SELECT ON fis_db.farmers_with_farms TO 'manage'@'localhost';
-GRANT SELECT ON fis_db.farms_with_crops TO 'manage'@'localhost';
-GRANT SELECT ON fis_db.farms_with_crops_and_location TO 'manage'@'localhost';
-GRANT SELECT ON fis_db.farms_with_livestock TO 'manage'@'localhost';
-GRANT SELECT ON fis_db.farms_with_locations TO 'manage'@'localhost';
+GRANT SELECT ON fis_db.crop_prices TO manage;
+GRANT SELECT ON fis_db.crop_types_with_names TO manage;
+GRANT SELECT ON fis_db.farmers_with_farms TO manage;
+GRANT SELECT ON fis_db.farms_with_crops TO manage;
+GRANT SELECT ON fis_db.farms_with_crops_and_location TO manage;
+GRANT SELECT ON fis_db.farms_with_livestock TO manage;
+GRANT SELECT ON fis_db.farms_with_locations TO manage;
 
 FLUSH PRIVILEGES;
+
+CREATE USER 'manager'@'localhost' IDENTIFIED BY 'Dbadmin123!';
+GRANT manage TO 'manager'@'localhost';
 
 
 
