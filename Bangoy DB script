@@ -58,7 +58,7 @@ CREATE TABLE accounts (
   account_id SERIAL PRIMARY KEY,
   account_name VARCHAR(50) NOT NULL,
   username VARCHAR(50) NOT NULL,
-  PASSWORD VARCHAR(50) NOT NULL
+  password VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE farm (
@@ -104,7 +104,7 @@ ORDER BY f.farm_id ASC;
 
 
 CREATE VIEW crop_prices AS
-SELECT f.farm_name, c.crop_name, c.farm_gate_price
+SELECT c.crop_name, c.farm_gate_price, f.farm_name
 FROM crop c
 JOIN farm_crop fc ON c.crop_id = fc.crop_id
 JOIN farm f ON fc.farm_id = f.farm_id
