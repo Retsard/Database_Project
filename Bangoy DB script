@@ -92,9 +92,12 @@ CREATE VIEW farmer_view AS
 SELECT farmer_id, first_name, last_name, age, ethnic_origin, image
 FROM farmer;
 
-CREATE VIEW city_view AS
-SELECT city_id, city_name
-FROM city;
+CREATE VIEW address_view AS
+SELECT a.barangay_id, bi.barangay_name || ', ' || ci.city_name AS full_address
+FROM address a
+INNER JOIN barangay bi ON a.barangay_id = bi.barangay_id
+INNER JOIN city ci ON bi.city_id = ci.city_id;
+
 
 CREATE VIEW livestock_view AS
 SELECT livestock_id, livestock_type, livestock_description, livestock_image
