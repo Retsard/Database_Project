@@ -169,7 +169,20 @@ FLUSH PRIVILEGES;
 CREATE USER 'manager'@'localhost' IDENTIFIED BY 'Dbadmin123!';
 GRANT manage TO 'manager'@'localhost';
 
+CREATE ROLE view;
 
+GRANT SELECT ON fis_db.crop_prices TO view;
+GRANT SELECT ON fis_db.crop_types_with_names TO view;
+GRANT SELECT ON fis_db.farmers_with_farms TO view;
+GRANT SELECT ON fis_db.farms_with_crops TO view;
+GRANT SELECT ON fis_db.farms_with_crops_and_location TO view;
+GRANT SELECT ON fis_db.farms_with_livestock TO view;
+GRANT SELECT ON fis_db.farms_with_locations TO view;
+
+FLUSH PRIVILEGES;
+
+CREATE USER 'viewer'@'localhost' IDENTIFIED BY 'Dbadmin123!';
+GRANT view TO 'viewer'@'localhost';
 
 
 
