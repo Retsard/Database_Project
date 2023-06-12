@@ -9,7 +9,7 @@ SET search_path TO fis_sc;
 CREATE USER db_admin WITH PASSWORD 'Dbadmin123!';
 ALTER USER db_admin SET search_path TO fis_sc;
 GRANT superadmin TO db_admin;
-GRANT ALL PRIVILEGES ON DATABASE fis_db TO db_admin;
+GRANT ALL PRIVILEGES ON DATABASE fis_db TO superadmin;
 
 /* Tables
 
