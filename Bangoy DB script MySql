@@ -186,6 +186,84 @@ FLUSH PRIVILEGES;
 CREATE USER 'viewer'@'%' IDENTIFIED BY 'Dbadmin123!';
 GRANT view TO 'viewer'@'%';
 
+INSERT INTO city (city_name)
+VALUES ('Davao City'), ('General Santos City');
+
+
+INSERT INTO barangay (barangay_name, city_id)
+VALUES ('Lagao', 2), ('San Isidro', 2), ('Calumpang', 2), ('Maa', 1), ('Catalunan Grande', 1), ('Matina Aplaya', 1);
+
+
+INSERT INTO address (barangay_id, city_id)
+VALUES (1, 2), (2, 2), (3, 2), (4, 1), (5, 1), (6,1);
+
+
+INSERT INTO crop (crop_type, crop_name, crop_description, crop_image, potential_yield, farm_gate_price)
+VALUES ('Fruit', 'Apple', 'Red and juicy apples', 'apple.jpg', 100, 2),
+        ('Vegetable', 'Carrot', 'Orange carrots', 'carrot.jpg', 80, 3),
+        ('Grain', 'Rice', 'Long-grain white rice', 'rice.jpg', 200, 5),
+        ('Fruit', 'Orange', 'Sweet and tangy oranges', 'orange.jpg', 90, 4),
+        ('Vegetable', 'Tomato', 'Fresh and ripe tomatoes', 'tomato.jpg', 70, 3),
+        ('Grain', 'Wheat', 'Nutritious wheat grains', 'wheat.jpg', 180, 6),
+        ('Fruit', 'Mango', 'Juicy tropical mangoes', 'mango.jpg', 120, 3),
+        ('Vegetable', 'Lettuce', 'Crisp and leafy lettuce', 'lettuce.jpg', 60, 2),
+        ('Grain', 'Corn', 'Golden and delicious corn', 'corn.jpg', 150, 4),
+        ('Fruit', 'Grapes', 'Plump and sweet grapes', 'grapes.jpg', 110, 5);
+
+
+INSERT INTO farmer (first_name, last_name, age, ethnic_origin, image)
+VALUES ('John', 'Doe', 35, 'Caucasian', 'john.jpg'),
+        ('Maria', 'Garcia', 28, 'Hispanic', 'maria.jpg'),
+        ('David', 'Smith', 42, 'African American', 'david.jpg'),
+        ('Sarah', 'Johnson', 31, 'Asian', 'sarah.jpg'),
+        ('Michael', 'Brown', 39, 'Caucasian', 'michael.jpg'),
+        ('Emily', 'Lee', 26, 'Asian', 'emily.jpg'),
+        ('Daniel', 'Taylor', 34, 'African American', 'daniel.jpg'),
+        ('Sophia', 'Clark', 29, 'Hispanic', 'sophia.jpg'),
+        ('Matthew', 'Rodriguez', 37, 'Caucasian', 'matthew.jpg'),
+        ('Olivia', 'Martinez', 33, 'Hispanic', 'olivia.jpg');
+
+
+INSERT INTO livestock (livestock_type, livestock_description, livestock_image)
+VALUES ('Cattle', 'Black Angus cattle', 'cattle.jpg'),
+        ('Chicken', 'Free-range chickens', 'chicken.jpg'),
+        ('Pig', 'Large white pigs', 'pig.jpg'),
+        ('Sheep', 'Merino sheep', 'sheep.jpg'),
+        ('Horse', 'Thoroughbred horses', 'horse.jpg'),
+        ('Goat', 'Boer goats', 'goat.jpg'),
+        ('Duck', 'Peking ducks', 'duck.jpg'),
+        ('Rabbit', 'Flemish Giant rabbits', 'rabbit.jpg'),
+        ('Turkey', 'Broad-Breasted Bronze turkeys', 'turkey.jpg'),
+        ('Bee', 'Honey bees', 'bee.jpg');
+
+
+INSERT INTO farm (farm_name, farm_image, farm_description, area_size, farmer_id, address_id)
+VALUES ('Green Valley Farm', 'greenvalleyfarm.jpg', 'A large farm with diverse crops and livestock', 500, 1, 6),
+ 	      ('Organic Harvest Farm', 'organicharvestfarm.jpg', 'Specializes in organic vegetables', 300, 2, 5),
+ 	      ('Golden Grain Farm', 'goldengrainfarm.jpg', 'Produces high-quality grains', 700, 3, 4),
+ 	      ('Fruitful Orchards', 'fruitfulorchards.jpg', 'Focuses on fruit orchards', 400, 4, 1),
+ 	      ('Nature Bounty Farm', 'naturesbountyfarm.jpg', 'Mixed farm with various crops and livestock', 600, 5, 2),
+ 	      ('Sunrise Farms', 'sunrisefarms.jpg', 'Family-owned farm specializing in poultry and eggs', 250, 6, 3),
+ 	      ('Green Acres Farm', 'greenacresfarm.jpg', 'Dedicated to sustainable farming practices', 450, 7, 2),
+ 	      ('Harvest Moon Farm', 'harvestmoonfarm.jpg', 'Produces a variety of seasonal fruits and vegetables', 350, 8, 4),
+ 	      ('Windy Hill Farm', 'windyhillfarm.jpg', 'Breeding and raising dairy cows for milk production', 550, 9, 6),
+ 	      ('Golden Vineyard Farm', 'goldenvineyardfarm.jpg', 'Vineyard specializing in wine grape cultivation', 200, 10, 1);
+
+
+INSERT INTO farm_livestock (farm_id, livestock_id)
+VALUES (2, 1), (4, 2), (6, 3), (8, 4), (10, 5), (1, 6), (3, 7), (5, 8), (7, 9), (9, 10), (2, 10), (4, 9), (6, 8), (8, 7), (10, 6), (1, 5), (3, 4), (5, 3), (7, 2), (9, 1), (2, 2), (4, 4), (6, 6), (8, 6), (10, 10);
+
+
+INSERT INTO farm_crop (farm_id, crop_id)
+VALUES (2, 1), (4, 2), (6, 3), (8, 4), (10, 5), (1, 6), (3, 7), (5, 8), (7, 9), (9, 10), (2, 10), (4, 9), (6, 8), (8, 7), (10, 6), (1, 5), (3, 4), (5, 3), (7, 2), (9, 1), (2, 2), (4, 4), (6, 6), (8, 6), (10, 10);
+
+
+INSERT INTO accounts (account_name, username, password)
+VALUES ('Department of Tourism', 'DOt', 'dot123'),
+       ('Department of Agrarian Reform', 'DAR', 'dar123'),
+       ('Department of Agriculture', 'DA', 'da123'),
+       ('Department of Environment and Natural Resources', 'DENR', 'denr123'),
+       ('Department of Trade and Industry', 'DTI', 'dti123');
 
 
 
