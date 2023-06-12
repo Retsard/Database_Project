@@ -2,9 +2,11 @@ CREATE DATABASE fis_db;
 
 USE fis_db;
 
-CREATE USER 'superadmin'@'%' IDENTIFIED BY 'password';
+CREATE ROLE superadmin;
+GRANT ALL PRIVILEGES ON *.* TO superadmin WITH GRANT OPTION;
 
-GRANT ALL PRIVILEGES ON *.* TO 'superadmin'@'%' WITH GRANT OPTION;
+CREATE USER 'db_admin'@'%' IDENTIFIED BY 'Dbadmin123!';
+GRANT superadmin TO 'db_admin'@'%'
 
 CREATE TABLE crop (
   crop_id INT(7) AUTO_INCREMENT PRIMARY KEY,
@@ -166,8 +168,8 @@ GRANT SELECT ON fis_db.farms_with_locations TO manage;
 
 FLUSH PRIVILEGES;
 
-CREATE USER 'manager'@'localhost' IDENTIFIED BY 'Dbadmin123!';
-GRANT manage TO 'manager'@'localhost';
+CREATE USER 'manager'@'%' IDENTIFIED BY 'Dbadmin123!';
+GRANT manage TO 'manager'@'%';
 
 CREATE ROLE view;
 
@@ -181,8 +183,8 @@ GRANT SELECT ON fis_db.farms_with_locations TO view;
 
 FLUSH PRIVILEGES;
 
-CREATE USER 'viewer'@'localhost' IDENTIFIED BY 'Dbadmin123!';
-GRANT view TO 'viewer'@'localhost';
+CREATE USER 'viewer'@'%' IDENTIFIED BY 'Dbadmin123!';
+GRANT view TO 'viewer'@'%';
 
 
 
