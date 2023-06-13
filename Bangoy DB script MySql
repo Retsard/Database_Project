@@ -315,6 +315,130 @@ VALUES ('Department of Tourism', 'DOt', 'dot123'),
 
 
 
+DELIMITER //
+CREATE PROCEDURE insert_crop(
+  crop_type_param VARCHAR(50),
+  crop_name_param VARCHAR(50),
+  crop_description_param VARCHAR(200),
+  crop_image_param VARCHAR(255),
+  potential_yield_param INT,
+  farm_gate_price_param INT
+)
+BEGIN
+  INSERT INTO crop (crop_type, crop_name, crop_description, crop_image, potential_yield, farm_gate_price)
+  VALUES (crop_type_param, crop_name_param, crop_description_param, crop_image_param, potential_yield_param, farm_gate_price_param);
+END //
+DELIMITER ;
+DELIMITER //
+
+CREATE PROCEDURE insert_farmer(
+  first_name_param VARCHAR(50),
+  last_name_param VARCHAR(50),
+  age_param INT,
+  ethnic_origin_param VARCHAR(50),
+  image_param VARCHAR(255)
+)
+BEGIN
+  INSERT INTO farmer (first_name, last_name, age, ethnic_origin, image)
+  VALUES (first_name_param, last_name_param, age_param, ethnic_origin_param, image_param);
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE insert_city(
+  city_name_param VARCHAR(50)
+)
+BEGIN
+  INSERT INTO city (city_name)
+  VALUES (city_name_param);
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE insert_barangay(
+  barangay_name_param VARCHAR(50),
+  city_id_param INT
+)
+BEGIN
+  INSERT INTO barangay (barangay_name, city_id)
+  VALUES (barangay_name_param, city_id_param);
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE insert_address(
+  barangay_id_param INT,
+  city_id_param INT
+)
+BEGIN
+  INSERT INTO address (barangay_id, city_id)
+  VALUES (barangay_id_param, city_id_param);
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE insert_livestock(
+  livestock_type_param VARCHAR(50),
+  livestock_description_param VARCHAR(50),
+  livestock_image_param VARCHAR(255)
+)
+BEGIN
+  INSERT INTO livestock (livestock_type, livestock_description, livestock_image)
+  VALUES (livestock_type_param, livestock_description_param, livestock_image_param);
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE insert_account(
+  account_name_param VARCHAR(50),
+  username_param VARCHAR(50),
+  password_param VARCHAR(50)
+)
+BEGIN
+  INSERT INTO accounts (account_name, username, password)
+  VALUES (account_name_param, username_param, password_param);
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE insert_farm(
+  farm_name_param VARCHAR(50),
+  farm_image_param VARCHAR(255),
+  farm_description_param VARCHAR(200),
+  area_size_param INT,
+  farmer_id_param INT,
+  address_id_param INT
+)
+BEGIN
+  INSERT INTO farm (farm_name, farm_image, farm_description, area_size, farmer_id, address_id)
+  VALUES (farm_name_param, farm_image_param, farm_description_param, area_size_param, farmer_id_param, address_id_param);
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE insert_farm_crop(
+  farm_id_param INT,
+  crop_id_param INT
+)
+BEGIN
+  INSERT INTO farm_crop (farm_id, crop_id)
+  VALUES (farm_id_param, crop_id_param);
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE insert_farm_livestock(
+  farm_id_param INT,
+  livestock_id_param INT
+)
+BEGIN
+  INSERT INTO farm_livestock (farm_id, livestock_id)
+  VALUES (farm_id_param, livestock_id_param);
+END //
+DELIMITER ;
+
+
+
 
 
 
