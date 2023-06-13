@@ -212,11 +212,11 @@ CREATE ROLE view LOGIN;
 GRANT CONNECT ON DATABASE fis_db TO view;
 GRANT USAGE ON SCHEMA fis_sc TO view;
 
-GRANT SELECT ON fis_db.crop_view TO view;
-GRANT SELECT ON fis_db.address_view TO view;
-GRANT SELECT ON fis_db.livestock_view TO view;
-GRANT SELECT ON fis_db.farm_view TO view;
-GRANT SELECT ON fis_db.farmer_view TO view;
+GRANT SELECT ON TABLE fis_sc.crop_view TO view;
+GRANT SELECT ON TABLE fis_sc.address_view TO view;
+GRANT SELECT ON TABLE fis_sc.livestock_view TO view;
+GRANT SELECT ON TABLE fis_sc.farm_view TO view;
+GRANT SELECT ON TABLE fis_sc.farmer_view TO view;
 GRANT SELECT ON TABLE fis_sc.crop_prices TO view;
 GRANT SELECT ON TABLE fis_sc.crop_types_with_names TO view;
 GRANT SELECT ON TABLE fis_sc.farmers_with_farms TO view;
