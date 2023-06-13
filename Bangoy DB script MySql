@@ -160,6 +160,15 @@ SELECT crop_type, GROUP_CONCAT(crop_name SEPARATOR ', ') AS crop_names
 FROM crop
 GROUP BY crop_type;
 
+CREATE VIEW city_view AS
+SELECT city_id, city_name
+FROM city;
+
+CREATE VIEW barangay_view AS
+SELECT b.barangay_id, b.barangay_name, c.city_name
+FROM barangay b
+JOIN city c ON b.city_id = c.city_id;
+
 
 DROP TRIGGER IF EXISTS validate_farmer_age_trigger;
 
