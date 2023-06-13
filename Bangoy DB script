@@ -217,6 +217,18 @@ GRANT SELECT ON TABLE fis_sc.farms_with_locations TO manage;
 GRANT SELECT ON TABLE fis_sc.city_view TO manage;
 GRANT SELECT ON TABLE fis_sc.barangay_view TO manage;
 
+GRANT EXECUTE ON PROCEDURE insert_crop TO manage;
+GRANT EXECUTE ON PROCEDURE insert_farmer TO manage;
+GRANT EXECUTE ON PROCEDURE insert_city TO manage;
+GRANT EXECUTE ON PROCEDURE insert_barangay TO manage;
+GRANT EXECUTE ON PROCEDURE insert_address TO manage;
+GRANT EXECUTE ON PROCEDURE insert_livestock TO manage;
+GRANT EXECUTE ON PROCEDURE insert_account TO manage;
+GRANT EXECUTE ON PROCEDURE insert_farm TO manage;
+GRANT EXECUTE ON PROCEDURE insert_farm_crop TO manage;
+GRANT EXECUTE ON PROCEDURE insert_farm_livestock TO manage;
+
+
 
 CREATE ROLE view LOGIN;
 GRANT CONNECT ON DATABASE fis_db TO view;
