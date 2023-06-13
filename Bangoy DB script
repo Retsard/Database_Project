@@ -169,6 +169,15 @@ SELECT crop_type, string_agg(crop_name, ', ') AS crop_names
 FROM crop
 GROUP BY crop_type;
 
+CREATE VIEW city_view AS
+SELECT city_id, city_name
+FROM city;
+
+CREATE VIEW barangay_view AS
+SELECT b.barangay_id, b.barangay_name, c.city_name
+FROM barangay b
+JOIN city c ON b.city_id = c.city_id;
+
 
 CREATE ROLE manage LOGIN;
 GRANT CONNECT ON DATABASE fis_db TO manage;
@@ -184,7 +193,6 @@ GRANT INSERT, SELECT, UPDATE ON TABLE fis_sc.livestock TO manage;
 GRANT INSERT, SELECT, UPDATE ON TABLE fis_sc.farm TO manage;
 GRANT INSERT, SELECT, UPDATE ON TABLE fis_sc.farm_crop TO manage;
 GRANT INSERT, SELECT, UPDATE ON TABLE fis_sc.farm_livestock TO manage;
-
 
 GRANT USAGE, SELECT, UPDATE ON SEQUENCE crop_crop_id_seq TO manage;
 GRANT USAGE, SELECT, UPDATE ON SEQUENCE farmer_farmer_id_seq TO manage;
@@ -206,6 +214,8 @@ GRANT SELECT ON TABLE fis_sc.farms_with_crops TO manage;
 GRANT SELECT ON TABLE fis_sc.farms_with_crops_and_location TO manage;
 GRANT SELECT ON TABLE fis_sc.farms_with_livestock TO manage;
 GRANT SELECT ON TABLE fis_sc.farms_with_locations TO manage;
+GRANT SELECT ON TABLE fis_sc.city_view TO manage;
+GRANT SELECT ON TABLE fis_sc.barangay_view TO manage;
 
 
 CREATE ROLE view LOGIN;
