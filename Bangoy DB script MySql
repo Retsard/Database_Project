@@ -220,7 +220,7 @@ GRANT SELECT ON fis_db.crop_view TO view;
 GRANT SELECT ON fis_db.address_view TO view;
 GRANT SELECT ON fis_db.livestock_view TO view;
 GRANT SELECT ON fis_db.farm_view TO view;
-GRANT SELECT ON fis_db.farmer TO view;
+GRANT SELECT ON fis_db.farmer_view TO view;
 GRANT SELECT ON fis_db.crop_prices TO view;
 GRANT SELECT ON fis_db.crop_types_with_names TO view;
 GRANT SELECT ON fis_db.farmers_with_farms TO view;
